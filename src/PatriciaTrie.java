@@ -77,24 +77,49 @@ public class PatriciaTrie implements IPatriciaTrie {
 	public int search(String word) {
 		//Loop through characters in word & page
 		int pageInd = 0;
+		int next = -1;
 		for (char c: word.toCharArray()) {
+			boolean foundChar = false;
 			//Loop through nexts for current page index
-			for (int i = 0; i < nextArr.get(pageInd).size(); ++i) {
-				//If the character stored at the index for current next == current character
-				if (nextArr.get(pageInd).get(i) != -1 &&
-					page[nextArr.get(pageInd).get(i)] == c) {
-					//Increment page index to that next index
-					pageInd = nextArr.get(pageInd).get(i);
+			if (next == -1) {
+				for (int i = 0; i < rootNext.size() && !foundChar; ++i) {
+					if (rootNext.get(i) != -1 &&
+						page[rootNext.get(i)] == c) {
+						pageInd = rootNext.get(i);
+						next = pageInd;
 
-					break;
+						foundChar = true;
+					}
+				}
+			}
+
+			else {
+				for (int i = 0; i < nextArr.get(next).size() && !foundChar; ++i) {
+					//If the character stored at the index for current next == current character
+					if (nextArr.get(next).get(i) != -1 &&
+							page[nextArr.get(next).get(i)] == c) {
+						//Increment page index to that next index
+						pageInd = nextArr.get(next).get(i);
+						next = pageInd;
+
+						foundChar = true;
+					}
 				}
 			}
 
 			//If a next index wasn't found, return -1 to indicate word was not found in trie
+			if (!foundChar) {
+				return -1;
+			}
+		}
+		//Check if word is marked as complete at this point and return the current index the page is at
+		if (nextArr.get(pageInd).contains(-1)) {
+			return pageInd;
+		}
+
+		else {
 			return -1;
 		}
-		//Return the current index the page is at
-		return pageInd;
 	}
 
 	public void setParentPtr(IPatriciaTrie newParent) {

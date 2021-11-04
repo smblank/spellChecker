@@ -4,6 +4,6 @@ public class TestDriver {
 		char[] testData = "air airplane airways has hat horse house sea".toCharArray();
 		IPatriciaTrie trie = new PatriciaTrie(testData);
 
-		System.out.println(trie.search("air"));
+		System.out.println(trie.search("2"));
 	}
 }
