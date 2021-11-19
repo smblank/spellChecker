@@ -18,11 +18,11 @@ public class BTree extends DefaultMutableTreeNode {
 		if (!isRoot() && isLeaf()) {
 			IPatriciaTrie parent = (IPatriciaTrie) ((DefaultMutableTreeNode)getParent()).getUserObject();
 			childTrie.setParentPtr(parent);
-			parent.setChildPtr(childTrie);
+			parent.addChildPtr(childTrie);
 		}
 		else {
 			childTrie.setParentPtr(trie);
-			trie.setChildPtr(childTrie);
+			trie.addChildPtr(childTrie);
 		}
 
 		Enumeration<TreeNode> children = children();
@@ -37,13 +37,7 @@ public class BTree extends DefaultMutableTreeNode {
 			}
 		}
 
-		MutableTreeNode newNode = new DefaultMutableTreeNode(newChild);
-		super.add(newNode);
-	}
-
-	@Override
-	public void remove (int childIndex) {
-		remove((MutableTreeNode) getChildAt(childIndex));
+		super.add(newChild);
 	}
 
 	@Override
@@ -78,7 +72,8 @@ public class BTree extends DefaultMutableTreeNode {
 		if (childTrie.getNextPtr() != null || childTrie.getPrevPtr() != null) {
 			//Child is a leaf
 			if (aChild.isLeaf()) {
-				childTrie.getParentPtr().setChildPtr(null);
+				childTrie.getNextPtr().setPrevPtr(null);
+				childTrie.getParentPtr().removeChildPtr(childTrie);
 			}
 
 			//Child is internal node
@@ -87,7 +82,7 @@ public class BTree extends DefaultMutableTreeNode {
 				TreeNode firstChild = children.nextElement();
 				IPatriciaTrie firstChildTrie = (IPatriciaTrie) ((DefaultMutableTreeNode)firstChild).getUserObject();
 
-				childTrie.getParentPtr().setChildPtr(firstChildTrie);
+				childTrie.getParentPtr().addChildPtr(firstChildTrie);
 
 				firstChildTrie.setNextPtr(childTrie.getNextPtr());
 				firstChildTrie.setPrevPtr(childTrie.getPrevPtr());
@@ -114,7 +109,7 @@ public class BTree extends DefaultMutableTreeNode {
 		else {
 			//Child is a leaf
 			if (aChild.isLeaf()) {
-				childTrie.getParentPtr().setChildPtr(null);
+				childTrie.getParentPtr().removeChildPtr(childTrie);
 			}
 
 			//Child is internal node
@@ -123,7 +118,7 @@ public class BTree extends DefaultMutableTreeNode {
 				TreeNode firstChild = children.nextElement();
 				IPatriciaTrie firstChildTrie = (IPatriciaTrie) ((DefaultMutableTreeNode)firstChild).getUserObject();
 
-				childTrie.getParentPtr().setChildPtr(firstChildTrie);
+				childTrie.getParentPtr().addChildPtr(firstChildTrie);
 
 				firstChildTrie.setNextPtr(null);
 				firstChildTrie.setPrevPtr(null);
@@ -147,7 +142,7 @@ public class BTree extends DefaultMutableTreeNode {
 		}
 
 		childTrie.setParentPtr(null);
-		childTrie.setChildPtr(null);
+		childTrie.removeChildPtrs();
 		childTrie.setNextPtr(null);
 		childTrie.setPrevPtr(null);
 

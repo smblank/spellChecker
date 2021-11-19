@@ -2,10 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5094e04a-d3b7-4056-a6ff-2627fb879b04" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/BTree.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/spellChecker/IPatriciaTrie.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/spellChecker/IPatriciaTrie.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/spellChecker/PatriciaTrie.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/spellChecker/PatriciaTrie.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/spellChecker/TestDriver.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/spellChecker/TestDriver.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BTree.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/BTree.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/IPatriciaTrie.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/IPatriciaTrie.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/PatriciaTrie.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/PatriciaTrie.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/TestDriver.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/TestDriver.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -81,7 +84,14 @@
       <option name="project" value="LOCAL" />
       <updated>1636057404804</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Finished first implementation of String B-Tree">
+      <created>1636691699572</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1636691699572</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -99,6 +109,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Initial Implementation of Patricia Trie" />
-    <option name="LAST_COMMIT_MESSAGE" value="Initial Implementation of Patricia Trie" />
+    <MESSAGE value="Finished first implementation of String B-Tree" />
+    <option name="LAST_COMMIT_MESSAGE" value="Finished first implementation of String B-Tree" />
   </component>
 </project>

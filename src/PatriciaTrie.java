@@ -3,7 +3,7 @@ import java.util.ArrayList;
 
 public class PatriciaTrie implements IPatriciaTrie {
 	private IPatriciaTrie parentPtr = null;
-	private IPatriciaTrie childPtr = null;
+	private List<IPatriciaTrie> childPtr;
 	private IPatriciaTrie nextPtr = null;
 	private IPatriciaTrie prevPtr = null;
 
@@ -21,6 +21,7 @@ public class PatriciaTrie implements IPatriciaTrie {
 	}
 
 	public PatriciaTrie(char[] page) {
+		childPtr = new ArrayList<>();
 		this.page = page;
 		rootNext = new ArrayList<>();
 
@@ -126,8 +127,16 @@ public class PatriciaTrie implements IPatriciaTrie {
 		parentPtr = newParent;
 	}
 
-	public void setChildPtr(IPatriciaTrie newChild) {
-		childPtr = newChild;
+	public void addChildPtr(IPatriciaTrie newChild) {
+		childPtr.add(newChild);
+	}
+
+	public void removeChildPtr(IPatriciaTrie child) {
+		childPtr.remove(child);
+	}
+
+	public void removeChildPtrs() {
+		childPtr.clear();
 	}
 
 	public void setNextPtr(IPatriciaTrie newNext) {
@@ -142,7 +151,7 @@ public class PatriciaTrie implements IPatriciaTrie {
 		return parentPtr;
 	}
 
-	public IPatriciaTrie getChildPtr() {
+	public List<IPatriciaTrie> getChildPtr() {
 		return childPtr;
 	}
 
