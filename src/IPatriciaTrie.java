@@ -3,6 +3,7 @@ import java.util.List;
 
 public interface IPatriciaTrie {
 	int search (String word);
+	List<String> findWords(int listSize, int editDistance, String word);
 
 	void setParentPtr(IPatriciaTrie newParent);
 	void addChildPtr(IPatriciaTrie newChild);

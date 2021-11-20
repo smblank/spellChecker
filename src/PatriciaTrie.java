@@ -1,5 +1,6 @@
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Stack;
 
 public class PatriciaTrie implements IPatriciaTrie {
 	private IPatriciaTrie parentPtr = null;
@@ -29,7 +30,6 @@ public class PatriciaTrie implements IPatriciaTrie {
 		nextArr = new ArrayList<>();
 		for (int i = 0; i < page.length; ++i) {
 			List<Integer> temp = new ArrayList<>();
-			//temp.add(-1);
 
 			nextArr.add(temp);
 		}
@@ -121,6 +121,63 @@ public class PatriciaTrie implements IPatriciaTrie {
 		else {
 			return -1;
 		}
+	}
+
+	int getLength(int pageInd) {
+		int length = 0;
+
+		for (int i = pageInd; page[i] != ' ' || i == 0; --i) {
+			length++;
+		}
+
+		return length;
+	}
+
+	public List<String> findWords(int listSize, int editDistance, String word) {
+		List<String> wordList = new ArrayList<>(listSize);
+
+		//Stacks to track progress through tree
+		Stack<Integer> horizontalStack = new Stack<>();
+		Stack<Stack <Integer>> verticalStack = new Stack<>();
+
+		int pageInd = 0;
+		int i = 0;
+		boolean wordExists = true;
+		for (char c:word.toCharArray()) {
+			horizontalStack.push(pageInd);
+			for (i = 0; i < nextArr.get(pageInd).size(); ++i) {
+				horizontalStack.push(i);
+				if (page[nextArr.get(pageInd).get(i)] == c) {
+					pageInd = nextArr.get(pageInd).get(i);
+					verticalStack.push(horizontalStack);
+					horizontalStack.clear();
+				}
+
+				else {
+					wordExists = false;
+					break;
+				}
+			}
+		}
+
+		if (!wordExists) {
+			int currDistance = 0;
+			int tempDistance = 0;
+			while (wordList.size() < listSize && currDistance + tempDistance < editDistance) {
+				if (nextArr.get(pageInd).get(i) == -1) {
+					String newWord = new String(page, pageInd - getLength(pageInd), getLength(pageInd));
+					wordList.add(newWord);
+
+				}
+
+				else {
+
+				}
+				tempDistance++;
+			}
+		}
+
+		return wordList;
 	}
 
 	public void setParentPtr(IPatriciaTrie newParent) {
