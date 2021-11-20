@@ -126,7 +126,7 @@ public class PatriciaTrie implements IPatriciaTrie {
 	int getLength(int pageInd) {
 		int length = 0;
 
-		for (int i = pageInd; page[i] != ' ' || i == 0; --i) {
+		for (int i = pageInd; page[i] != ' ' && i == 0; --i) {
 			length++;
 		}
 
@@ -140,40 +140,78 @@ public class PatriciaTrie implements IPatriciaTrie {
 		Stack<Integer> horizontalStack = new Stack<>();
 		Stack<Stack <Integer>> verticalStack = new Stack<>();
 
+		boolean root = true;
 		int pageInd = 0;
 		int i = 0;
 		boolean wordExists = true;
 		for (char c:word.toCharArray()) {
-			horizontalStack.push(pageInd);
-			for (i = 0; i < nextArr.get(pageInd).size(); ++i) {
-				horizontalStack.push(i);
-				if (page[nextArr.get(pageInd).get(i)] == c) {
-					pageInd = nextArr.get(pageInd).get(i);
-					verticalStack.push(horizontalStack);
-					horizontalStack.clear();
+			if (root) {
+				horizontalStack.push(-1);
+				for (i = 0; i < rootNext.size() && root; ++i) {
+					horizontalStack.push(i);
+					if (page[rootNext.get(i)] == c) {
+						pageInd = rootNext.get(i);
+						verticalStack.push(horizontalStack);
+						horizontalStack = new Stack<>();
+						root = false;
+					}
 				}
 
-				else {
+				if (root) {
+					wordExists = false;
+					break;
+				}
+			}
+
+			else {
+				boolean foundChar = false;
+				horizontalStack.push(pageInd);
+				for (i = 0; i < nextArr.get(pageInd).size() && !foundChar; ++i) {
+					horizontalStack.push(i);
+					if (page[nextArr.get(pageInd).get(i)] == c) {
+						pageInd = nextArr.get(pageInd).get(i);
+						verticalStack.push(horizontalStack);
+						horizontalStack = new Stack<>();
+
+						foundChar = true;
+					}
+				}
+
+				if (!foundChar) {
 					wordExists = false;
 					break;
 				}
 			}
 		}
 
+		System.out.println(horizontalStack);
+		System.out.println(verticalStack);
+
 		if (!wordExists) {
 			int currDistance = 0;
 			int tempDistance = 0;
-			while (wordList.size() < listSize && currDistance + tempDistance < editDistance) {
+			i--;
+			while (wordList.size() < listSize) {
 				if (nextArr.get(pageInd).get(i) == -1) {
 					String newWord = new String(page, pageInd - getLength(pageInd), getLength(pageInd));
 					wordList.add(newWord);
 
+					horizontalStack = verticalStack.pop();
+					pageInd = horizontalStack.get(0);
+					i = horizontalStack.peek();
+					++currDistance;
+					while (nextArr.get(pageInd).get(nextArr.get(pageInd).size() - 1) == i) {
+						horizontalStack = verticalStack.pop();
+						pageInd = horizontalStack.get(0);
+						i = horizontalStack.peek();
+						++currDistance;
+					}
 				}
 
 				else {
-
+					pageInd = nextArr.get(pageInd).get(i);
+					tempDistance++;
 				}
-				tempDistance++;
 			}
 		}
 

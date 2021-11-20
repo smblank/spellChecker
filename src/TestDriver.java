@@ -1,3 +1,5 @@
+import java.util.List;
+
 public class TestDriver {
 	public static void main (String[] args) {
 		//Create Patricia Trie
@@ -8,7 +10,7 @@ public class TestDriver {
 		IPatriciaTrie trie2 = new PatriciaTrie(testData2);
 		IPatriciaTrie trie3 = new PatriciaTrie(testData3);
 
-		System.out.println(trie.search("airplane"));
+		//System.out.println(trie.search("airplane"));
 
 		BTree newNode = new BTree(trie);
 		BTree node2 = new BTree(trie2);
@@ -18,22 +20,8 @@ public class TestDriver {
 		newNode.add(node3);
 		newNode.remove(node2);
 
-		System.out.println(newNode.getUserObject());
-		System.out.println(((PatriciaTrie) newNode.getUserObject()).getParentPtr());
-		System.out.println(((PatriciaTrie) newNode.getUserObject()).getChildPtr());
-		System.out.println("\n\n");
+		List<String> words = trie.findWords(2, 10, "horny");
 
-		System.out.println(node2.getUserObject());
-		System.out.println(((PatriciaTrie) node2.getUserObject()).getParentPtr());
-		System.out.println(((PatriciaTrie) node2.getUserObject()).getChildPtr());
-		System.out.println(((PatriciaTrie) node2.getUserObject()).getNextPtr());
-		System.out.println(((PatriciaTrie) node2.getUserObject()).getPrevPtr());
-		System.out.println("\n\n");
-
-		System.out.println(node3.getUserObject());
-		System.out.println(((PatriciaTrie) node3.getUserObject()).getParentPtr());
-		System.out.println(((PatriciaTrie) node3.getUserObject()).getChildPtr());
-		System.out.println(((PatriciaTrie) node3.getUserObject()).getNextPtr());
-		System.out.println(((PatriciaTrie) node3.getUserObject()).getPrevPtr());
+		System.out.println(words);
 	}
 }
