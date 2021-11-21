@@ -2,10 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5094e04a-d3b7-4056-a6ff-2627fb879b04" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/DamerauLevenshtein.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Editor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/spellChecker/IPatriciaTrie.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/spellChecker/IPatriciaTrie.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/spellChecker/META-INF/spellChecker.kotlin_module" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/spellChecker/PatriciaTrie.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/spellChecker/PatriciaTrie.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/spellChecker/TestDriver.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/spellChecker/TestDriver.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/PatriciaTrie.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/PatriciaTrie.java" afterDir="false" />
@@ -120,16 +120,5 @@
     <MESSAGE value="Finished first implementation of String B-Tree" />
     <MESSAGE value="Finished String B-Tree implementation" />
     <option name="LAST_COMMIT_MESSAGE" value="Finished String B-Tree implementation" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/PatriciaTrie.java</url>
-          <line>190</line>
-          <option name="timeStamp" value="6" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>

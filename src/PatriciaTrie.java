@@ -126,7 +126,7 @@ public class PatriciaTrie implements IPatriciaTrie {
 	int getLength(int pageInd) {
 		int length = 0;
 
-		for (int i = pageInd; page[i] != ' ' && i == 0; --i) {
+		for (int i = pageInd; page[i] != ' ' && i != 0; --i) {
 			length++;
 		}
 
@@ -184,32 +184,80 @@ public class PatriciaTrie implements IPatriciaTrie {
 			}
 		}
 
-		System.out.println(horizontalStack);
-		System.out.println(verticalStack);
-
 		if (!wordExists) {
 			int currDistance = 0;
 			int tempDistance = 0;
 			i--;
 			while (wordList.size() < listSize) {
+				if (pageInd == -1) {
+					if (rootNext.get(i) == -1) {
+						String newWord = new String(page, pageInd - getLength(pageInd) + 1, getLength(pageInd));
+						wordList.add(newWord);
+
+						return wordList;
+					}
+
+					else {
+						verticalStack.push(horizontalStack);
+						horizontalStack = new Stack<>();
+
+						pageInd = rootNext.get(i);
+						horizontalStack.push(pageInd);
+						i = 0;
+						horizontalStack.push(i);
+						tempDistance++;
+					}
+				}
 				if (nextArr.get(pageInd).get(i) == -1) {
-					String newWord = new String(page, pageInd - getLength(pageInd), getLength(pageInd));
+					String newWord = new String(page, pageInd - getLength(pageInd) + 1, getLength(pageInd));
 					wordList.add(newWord);
 
 					horizontalStack = verticalStack.pop();
 					pageInd = horizontalStack.get(0);
 					i = horizontalStack.peek();
 					++currDistance;
-					while (nextArr.get(pageInd).get(nextArr.get(pageInd).size() - 1) == i) {
+					if (pageInd == -1) {
+						if (i + 1 < rootNext.size()) {
+							i++;
+							horizontalStack.push(i);
+							continue;
+						}
+
+						//Hit the root node
+						else {
+							return wordList;
+						}
+					}
+					while (i + 1 >= nextArr.get(pageInd).size()) {
 						horizontalStack = verticalStack.pop();
 						pageInd = horizontalStack.get(0);
 						i = horizontalStack.peek();
 						++currDistance;
+
+						if (pageInd == -1) {
+							if (i + 1 < rootNext.size()) {
+								break;
+							}
+
+							//Hit the root node
+							else {
+								return wordList;
+							}
+						}
 					}
+
+					i++;
+					horizontalStack.push(i);
 				}
 
 				else {
+					verticalStack.push(horizontalStack);
+					horizontalStack = new Stack<>();
+
 					pageInd = nextArr.get(pageInd).get(i);
+					horizontalStack.push(pageInd);
+					i = 0;
+					horizontalStack.push(i);
 					tempDistance++;
 				}
 			}

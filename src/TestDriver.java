@@ -1,7 +1,8 @@
+import javax.swing.*;
 import java.util.List;
 
 public class TestDriver {
-	public static void main (String[] args) {
+	public static void main (String[] args) throws ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException {
 		//Create Patricia Trie
 		char[] testData = "air airplane airways has hat horse house sea".toCharArray();
 		char[] testData2 = "Popplio Peepachu merlot driver test".toCharArray();
@@ -20,8 +21,21 @@ public class TestDriver {
 		newNode.add(node3);
 		newNode.remove(node2);
 
-		List<String> words = trie.findWords(2, 10, "horny");
+		//List<String> words = trie.findWords(2, 10, "host");
 
-		System.out.println(words);
+		//System.out.println(words);
+
+		DamerauLevenshtein dl = new DamerauLevenshtein(newNode);
+		String test = "horny host";
+		List<IncorrectWords> incorrects = dl.checkSpelling(test);
+		for (IncorrectWords w:incorrects) {
+			System.out.println(w.word);
+			for (String r:w.replacements) {
+				System.out.println(r);
+			}
+			System.out.println("\n\n");
+		}
+
+		Editor e = new Editor(dl);
 	}
 }
