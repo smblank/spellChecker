@@ -14,6 +14,7 @@ public class Editor extends JFrame implements ActionListener {
 	DamerauLevenshtein automata;
 	JTextPane text;
 	JFrame frame;
+	JPopupMenu pop;
 
 	public Editor(DamerauLevenshtein dl) throws ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException {
 		automata = dl;
@@ -30,7 +31,13 @@ public class Editor extends JFrame implements ActionListener {
 		JPanel topPanel = new JPanel ( new FlowLayout(FlowLayout.LEFT));
 		topPanel.add(checkSpelling);
 
+		pop = new JPopupMenu();
+		JPanel sidePanel = new JPanel ( new FlowLayout(FlowLayout.LEFT));
+		sidePanel.add(pop);
 
+
+
+		frame.add(sidePanel, BorderLayout.SOUTH);
 		frame.add(topPanel, BorderLayout.NORTH);
 		frame.add(text);
 		frame.setSize(500, 500);
@@ -49,22 +56,30 @@ public class Editor extends JFrame implements ActionListener {
 
 		try {
 			text.setText("");
-			markIncorrectWord(incorrectWordsList.get(0).word, incorrectWordsList.get(0).replacements, 0, 0);
+			for (IncorrectWords word: incorrectWordsList) {
+				markIncorrectWord(word.word + " ", word.replacements,0);
+			}
 		}
 		catch (BadLocationException e) {}
 	}
 
-	void markIncorrectWord (String word, List<String> replacements, int ind, int pos) throws BadLocationException {
+	void markIncorrectWord (String word, List<String> replacements, int pos) throws BadLocationException {
 		SimpleAttributeSet red = new SimpleAttributeSet();
 		StyleConstants.setForeground(red, Color.RED);
 		SimpleAttributeSet black = new SimpleAttributeSet();
 		StyleConstants.setForeground(black, Color.BLACK);
 
+		int length = text.getDocument().getLength();
+
 		if (replacements.isEmpty()) {
-			text.getDocument().insertString(0, word, black);
+			text.getDocument().insertString(length, word, black);
 		}
 		else {
-			text.getDocument().insertString(0, word, red);
+			text.getDocument().insertString(length, word, red);
+			for (String s: replacements) {
+				JMenuItem m = new JMenuItem(s);
+				pop.add(m);
+			}
 		}
 	}
 }

@@ -4,7 +4,7 @@ import java.util.List;
 public class TestDriver {
 	public static void main (String[] args) throws ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException {
 		//Create Patricia Trie
-		char[] testData = "air airplane airways has hat horse house sea".toCharArray();
+		char[] testData = "a aa aaa aaron ab abandoned abc aberdeen abilities ability".toCharArray();
 		char[] testData2 = "Popplio Peepachu merlot driver test".toCharArray();
 		char[] testData3 = "Cat in the Hat Joan of Ark Pikachu Pokemon Pizza Halloween Ladylike".toCharArray();
 		IPatriciaTrie trie = new PatriciaTrie(testData);
@@ -21,12 +21,12 @@ public class TestDriver {
 		newNode.add(node3);
 		newNode.remove(node2);
 
-		//List<String> words = trie.findWords(2, 10, "host");
+		List<String> words = trie.findWords(10, 3, "acb");
 
-		//System.out.println(words);
+		System.out.println(words);
 
 		DamerauLevenshtein dl = new DamerauLevenshtein(newNode);
-		String test = "horny host";
+		String test = "horny host airplane";
 		List<IncorrectWords> incorrects = dl.checkSpelling(test);
 		for (IncorrectWords w:incorrects) {
 			System.out.println(w.word);

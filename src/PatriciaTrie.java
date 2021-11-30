@@ -126,11 +126,48 @@ public class PatriciaTrie implements IPatriciaTrie {
 	int getLength(int pageInd) {
 		int length = 0;
 
-		for (int i = pageInd; page[i] != ' ' && i != 0; --i) {
+		for (int i = pageInd; i >= 0 && page[i] != ' '; --i) {
 			length++;
 		}
 
 		return length;
+	}
+
+	int getEditDistance (String word, String substr, int ind) {
+		if (ind < word.length() - 1) {
+			substr += word.substring(ind + 1);
+		}
+		int[][] edits = new int[word.length() + 1][substr.length() + 1];
+
+		for (int i = 1; i <= word.length(); ++i) {
+			edits[i][0] = i;
+		}
+		for (int j = 1; j <= substr.length(); ++j) {
+			edits[0][j] = j;
+		}
+
+		int cost;
+		for (int i = 1; i <= word.length(); ++i) {
+			for (int j = 1; j <= substr.length(); ++j) {
+				if (word.charAt(i - 1) == substr.charAt(j - 1)) {
+					cost = 0;
+				}
+				else {
+					cost = 1;
+				}
+
+				edits[i][j] = Math.min(Math.min(edits[i - 1][j] + 1, edits[i][j - 1] + 1), edits[i - 1][j - 1] + cost);
+
+				if (i > 1 &&
+						j > 1 &&
+						word.charAt(i - 1) == substr.charAt(j - 2) &&
+						word.charAt(i - 2) == substr.charAt(j - 1) ) {
+					edits[i][j] = Math.min(edits[i][j], edits[i - 2][j - 2] + cost);
+				}
+			}
+		}
+
+		return edits[word.length()][substr.length()];
 	}
 
 	public List<String> findWords(int listSize, int editDistance, String word) {
@@ -142,123 +179,167 @@ public class PatriciaTrie implements IPatriciaTrie {
 
 		boolean root = true;
 		int pageInd = 0;
-		int i = 0;
-		boolean wordExists = true;
-		for (char c:word.toCharArray()) {
+		int childInd = 0;
+		int wordInd = 0;
+		String currSubstr = "";
+		currSubstr += page[rootNext.get(childInd)];
+
+		horizontalStack.push(-1);
+		horizontalStack.push(childInd);
+
+		while (wordList.size() < listSize) {
 			if (root) {
-				horizontalStack.push(-1);
-				for (i = 0; i < rootNext.size() && root; ++i) {
-					horizontalStack.push(i);
-					if (page[rootNext.get(i)] == c) {
-						pageInd = rootNext.get(i);
-						verticalStack.push(horizontalStack);
-						horizontalStack = new Stack<>();
-						root = false;
-					}
-				}
-
-				if (root) {
-					wordExists = false;
-					break;
-				}
-			}
-
-			else {
-				boolean foundChar = false;
-				horizontalStack.push(pageInd);
-				for (i = 0; i < nextArr.get(pageInd).size() && !foundChar; ++i) {
-					horizontalStack.push(i);
-					if (page[nextArr.get(pageInd).get(i)] == c) {
-						pageInd = nextArr.get(pageInd).get(i);
-						verticalStack.push(horizontalStack);
-						horizontalStack = new Stack<>();
-
-						foundChar = true;
-					}
-				}
-
-				if (!foundChar) {
-					wordExists = false;
-					break;
-				}
-			}
-		}
-
-		if (!wordExists) {
-			int currDistance = 0;
-			int tempDistance = 0;
-			i--;
-			while (wordList.size() < listSize) {
-				if (pageInd == -1) {
-					if (rootNext.get(i) == -1) {
+				if (getEditDistance(word, currSubstr, wordInd) < editDistance) {
+					if (rootNext.get(childInd) == -1) {
 						String newWord = new String(page, pageInd - getLength(pageInd) + 1, getLength(pageInd));
-						wordList.add(newWord);
+						if (getEditDistance(word, newWord, word.length()) < editDistance) {
+							wordList.add(newWord);
+						}
 
-						return wordList;
+						if (childInd + 1 <= nextArr.get(pageInd).size() - 1) {
+							childInd++;
+							horizontalStack.push(childInd);
+							currSubstr += page[nextArr.get(pageInd).get(childInd)];
+						}
+						else {
+							return wordList;
+						}
 					}
 
 					else {
 						verticalStack.push(horizontalStack);
 						horizontalStack = new Stack<>();
 
-						pageInd = rootNext.get(i);
+						pageInd = rootNext.get(childInd);
+						childInd = 0;
 						horizontalStack.push(pageInd);
-						i = 0;
-						horizontalStack.push(i);
-						tempDistance++;
+						wordInd++;
+						horizontalStack.push(childInd);
+						if (nextArr.get(pageInd).get(childInd) != -1) {
+							currSubstr += page[nextArr.get(pageInd).get(childInd)];
+						}
+						root = false;
 					}
 				}
-				if (nextArr.get(pageInd).get(i) == -1) {
-					String newWord = new String(page, pageInd - getLength(pageInd) + 1, getLength(pageInd));
-					wordList.add(newWord);
 
-					horizontalStack = verticalStack.pop();
-					pageInd = horizontalStack.get(0);
-					i = horizontalStack.peek();
-					++currDistance;
-					if (pageInd == -1) {
-						if (i + 1 < rootNext.size()) {
-							i++;
-							horizontalStack.push(i);
-							continue;
+				else if (childInd + 1 <= rootNext.size() - 1) {
+					childInd++;
+					horizontalStack.push(childInd);
+					//currSubstr = currSubstr.substring(0, currSubstr.length() - 1);
+					currSubstr += page[rootNext.get(childInd)];
+				}
+
+				else {
+					return wordList;
+				}
+			}
+
+			else {
+				if (getEditDistance(word, currSubstr, wordInd) < editDistance) {
+					if (nextArr.get(pageInd).get(childInd) == -1) {
+						String newWord = new String(page, pageInd - getLength(pageInd) + 1, getLength(pageInd));
+						if (getEditDistance(word, newWord, word.length()) < editDistance) {
+							wordList.add(newWord);
 						}
 
-						//Hit the root node
+						if (childInd + 1 <= nextArr.get(pageInd).size() - 1) {
+							childInd++;
+							horizontalStack.push(childInd);
+							currSubstr += page[nextArr.get(pageInd).get(childInd)];
+						}
 						else {
-							return wordList;
-						}
-					}
-					while (i + 1 >= nextArr.get(pageInd).size()) {
-						horizontalStack = verticalStack.pop();
-						pageInd = horizontalStack.get(0);
-						i = horizontalStack.peek();
-						++currDistance;
+							horizontalStack = verticalStack.pop();
+							pageInd = horizontalStack.get(0);
+							childInd = horizontalStack.peek();
+							wordInd--;
+							currSubstr = currSubstr.substring(0, currSubstr.length() - 1);
 
-						if (pageInd == -1) {
-							if (i + 1 < rootNext.size()) {
-								break;
+							while (pageInd != -1 && childInd + 1 > nextArr.get(pageInd).size() - 1) {
+								horizontalStack = verticalStack.pop();
+								pageInd = horizontalStack.get(0);
+								childInd = horizontalStack.peek();
+								wordInd--;
+								currSubstr = currSubstr.substring(0, currSubstr.length() - 1);
 							}
 
-							//Hit the root node
+							if (pageInd != -1 && childInd + 1 <= nextArr.get(pageInd).size() - 1) {
+								childInd++;
+								horizontalStack.push(childInd);
+								currSubstr += page[nextArr.get(pageInd).get(childInd)];
+							}
+							else {
+								if (childInd + 1 <= rootNext.size() - 1) {
+									childInd++;
+									horizontalStack.push(childInd);
+									currSubstr += page[rootNext.get(childInd)];
+									root = true;
+								}
+								else {
+									return wordList;
+								}
+							}
+						}
+					}
+
+					else {
+						verticalStack.push(horizontalStack);
+						horizontalStack = new Stack<>();
+
+						pageInd = nextArr.get(pageInd).get(childInd);
+						childInd = 0;
+						horizontalStack.push(pageInd);
+						wordInd++;
+						horizontalStack.push(childInd);
+						if (nextArr.get(pageInd).get(childInd) != -1) {
+							currSubstr += page[nextArr.get(pageInd).get(childInd)];
+						}
+					}
+				}
+
+				else if (childInd + 1 <= nextArr.get(pageInd).size() - 1) {
+					childInd++;
+					horizontalStack.push(childInd);
+					currSubstr += page[nextArr.get(pageInd).get(childInd)];
+				}
+
+				else {
+					if (childInd + 1 <= nextArr.get(pageInd).size() - 1) {
+						childInd++;
+						horizontalStack.push(childInd);
+						currSubstr += page[nextArr.get(pageInd).get(childInd)];
+					}
+					else {
+						horizontalStack = verticalStack.pop();
+						pageInd = horizontalStack.get(0);
+						childInd = horizontalStack.peek();
+						wordInd--;
+						currSubstr = currSubstr.substring(0, currSubstr.length() - 1);
+
+						while (pageInd != -1 && childInd + 1 > nextArr.get(pageInd).size() - 1   ) {
+							horizontalStack = verticalStack.pop();
+							pageInd = horizontalStack.get(0);
+							childInd = horizontalStack.peek();
+							wordInd--;
+							currSubstr = currSubstr.substring(0, currSubstr.length() - 1);
+						}
+
+						if (pageInd != -1 && childInd + 1 <= nextArr.get(pageInd).size() - 1) {
+							childInd++;
+							horizontalStack.push(childInd);
+							currSubstr += page[nextArr.get(pageInd).get(childInd)];
+						}
+						else {
+							if (childInd + 1 <= rootNext.size() - 1) {
+								childInd++;
+								horizontalStack.push(childInd);
+								currSubstr += page[rootNext.get(childInd)];
+								root = true;
+							}
 							else {
 								return wordList;
 							}
 						}
 					}
-
-					i++;
-					horizontalStack.push(i);
-				}
-
-				else {
-					verticalStack.push(horizontalStack);
-					horizontalStack = new Stack<>();
-
-					pageInd = nextArr.get(pageInd).get(i);
-					horizontalStack.push(pageInd);
-					i = 0;
-					horizontalStack.push(i);
-					tempDistance++;
 				}
 			}
 		}

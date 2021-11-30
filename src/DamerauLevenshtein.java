@@ -15,8 +15,8 @@ class IncorrectWords {
 
 public class DamerauLevenshtein {
 	private BTree stringTree;
-	private int maxListSize = 10;
-	private int maxEditDistance = 3;
+	private int maxListSize = 2;
+	private int maxEditDistance = 10;
 
 	public DamerauLevenshtein (BTree root) {
 		stringTree = root;
@@ -24,6 +24,12 @@ public class DamerauLevenshtein {
 
 	public List<String> automata (String word) {
 		Enumeration<TreeNode> bfsTree = stringTree.breadthFirstEnumeration();
+		int inDict = ((IPatriciaTrie) stringTree.getUserObject()).search(word);
+		if (inDict != -1) {
+			List<String> replaceList = new ArrayList<>();
+			return replaceList;
+		}
+
 		List<String> replaceList = ((IPatriciaTrie) stringTree.getUserObject()).findWords(maxListSize, maxEditDistance, word);
 
 		while (replaceList.isEmpty() && bfsTree.hasMoreElements()) {
